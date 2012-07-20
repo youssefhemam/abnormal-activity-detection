@@ -5,6 +5,10 @@
 	Name="filefind"
 	ProjectGUID="{41649CD4-4A80-4427-BF64-D0817BE16983}"
 	RootNamespace="filefind"
+	SccProjectName="Svn"
+	SccAuxPath="Svn"
+	SccLocalPath="Svn"
+	SccProvider="SubversionScc"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -194,6 +198,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\test.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -215,6 +223,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
