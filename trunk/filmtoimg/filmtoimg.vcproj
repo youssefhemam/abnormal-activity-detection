@@ -5,6 +5,10 @@
 	Name="filmtoimg"
 	ProjectGUID="{074304AD-9B69-4EC1-8192-0973865BAB70}"
 	RootNamespace="filmtoimg"
+	SccProjectName="Svn"
+	SccAuxPath="Svn"
+	SccLocalPath="Svn"
+	SccProvider="SubversionScc"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
