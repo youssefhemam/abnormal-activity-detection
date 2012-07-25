@@ -526,6 +526,22 @@ ImageOperations::~ImageOperations()
    delete[] cur_frame_data;
    delete[] classes;
    delete[] local_evidence;*/
+	if (classes!=NULL)
+	{
+		for (int i=0;i<height;i++)
+		{
+			delete[] classes[i];
+		}
+		delete[] classes; 
+	}
+	if (local_evidence!=NULL)
+	{
+		for (int i=0;i<height;i++)
+		{
+			delete[] local_evidence[i];
+		}
+		delete[] local_evidence;
+	}
 	
 
 }
