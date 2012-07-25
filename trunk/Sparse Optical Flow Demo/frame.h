@@ -9,7 +9,7 @@ class Frame
 {
 public:
 	Frame(void);
-	//Frame & 
+	const Frame & operator=(const Frame & copy);
 	//参数为队列中的顺序，帧结构的宽，帧结构的高
 	Frame(int s, int w,int h);
 	~Frame(void);

@@ -115,4 +115,10 @@ void Frame::setWH( int w ,int h)
    height=h;
 }
 
+const Frame & Frame::operator=( const Frame & copy )
+{
+   cout<<"fa"<<endl;
+   return *this;
+}
+
 
