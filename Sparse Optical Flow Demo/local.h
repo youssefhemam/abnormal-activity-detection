@@ -19,7 +19,7 @@ public:
 	CvMat * m_subregion;
     //int **l;
 	onlinesvr::Vector<double> * activitydescriptor;
-	CvHistogram* hist;
+	
 private:
 	CvPoint point;
 	
