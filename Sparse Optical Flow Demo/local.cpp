@@ -13,7 +13,7 @@ static int end=0;
 static int locals=0;
 local::local(const local& l)
 {
-  cout<<"copy"<<copys++<<endl;
+  
 }
 local::local(void)
 {
@@ -31,10 +31,7 @@ local::~local(void)
 	{
 		cvReleaseMat(&m_subregion);
 	}
-	if (hist!=NULL)
-	{
-		cvReleaseHist(&hist);
-	}
+	
 	if (activitydescriptor!=NULL)
 	{
         delete activitydescriptor;
@@ -74,8 +71,8 @@ void local::generateHistogram()
 
 	float *HistogramRange[1]={&HistogramRange1[0]};
 	
-
-
+ 
+   CvHistogram* hist;
 
 	hist = cvCreateHist(1,&HistogramBins,CV_HIST_ARRAY,HistogramRange);
 
@@ -135,6 +132,10 @@ void local::generateHistogram()
 
 	}
 	activitydescriptor->DivideScalar(12.0f);//H(l)=p(l|t)
+	if (hist!=NULL)
+	{
+		cvReleaseHist(&hist);
+	}
 
    #ifdef DEBUG
 	lo_out<<endl;
@@ -150,3 +151,43 @@ void local::generateHistogram()
    #endif
 	
 }
+
+/*
+const local & local::operator=( const local& copy )
+{
+	//cout<<"start"<<endl;
+    if(this ==&copy)
+	{
+		//cout<<"end1"<<endl;
+		return *this;
+	}
+	if (m_subregion!=NULL)
+	{
+		delete m_subregion;
+		m_subregion=NULL;
+
+	}
+	if (activitydescriptor!=NULL)
+	{
+		delete activitydescriptor;
+		activitydescriptor=NULL;
+	}
+
+	point=copy.point;
+	m_subregion=cvCreateMat(3,4,CV_32FC1);
+	for (int i=0;i<m_subregion->rows;i++)
+	{
+		for (int j=0;j<m_subregion->cols;j++)
+		{
+			m_subregion->data.fl[i*m_subregion->cols+j]=copy.m_subregion->data.fl[i*copy.m_subregion->cols+j];
+		}
+	}
+	activitydescriptor=new onlinesvr::Vector<double>;
+	memcpy(activitydescriptor,copy.activitydescriptor,sizeof(Vector<double>*));
+	//cout<<"end"<<endl;
+	return *this;
+
+//return copy;
+
+    
+}*/

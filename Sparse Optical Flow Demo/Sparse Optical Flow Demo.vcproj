@@ -5,6 +5,10 @@
 	Name="Sparse Optical Flow Demo"
 	ProjectGUID="{A806E401-4146-420C-B77C-B6F8E8334E3E}"
 	RootNamespace="SparseOpticalFlowDemo"
+	SccProjectName="Svn"
+	SccAuxPath="Svn"
+	SccLocalPath="Svn"
+	SccProvider="SubversionScc"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
