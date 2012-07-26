@@ -116,7 +116,7 @@ void CompareHistogram(Frame &pre,Frame &cur,Frame &next)
 int main(void)
 {
 	static long code=1000000;
-	const static long start_frame=3000;
+	const static long start_frame=0;
 	ofstream zhjg("zhjg.txt");
 	ofstream logs("log.txt");
 	list<vector<vector<ComponentFeature>>> video_Feature;
@@ -167,6 +167,7 @@ int main(void)
 			fprintf(stderr, "Error: Hmm. The end came sooner than we thought.\n");
 			return -1;
 		}
+		 //current_frame++;
 		/* Allocate another image if not already allocated.
 		 * Image has ONE channel of color (ie: monochrome) with 8-bit "color" depth.
 		 * This is the image format OpenCV algorithms actually operate on (mostly).
@@ -186,14 +187,22 @@ int main(void)
 		//cvShowImage("frame1",frame1);
 		utils::allocateOnDemand( &frame1out, frame_size, IPL_DEPTH_8U, 3 );
 		cvConvertImage(frame, frame1out, 0);
-      
+        
 		/* 获得第二帧*/
-		frame = cvQueryFrame( input_video );
-		if (frame == NULL)
+		do 
 		{
-			fprintf(stderr, "Error: Hmm. The end came sooner than we thought.\n");
-			return -1;
-		}
+			frame = cvQueryFrame( input_video );
+			if (frame == NULL)
+			{
+				fprintf(stderr, "Error: Hmm. The end came sooner than we thought.\n");
+				return -1;
+			}
+			current_frame++;
+
+		} while (current_frame%25!=0);
+		
+		//frame = cvQueryFrame( input_video );
+	
 		//frame2_1C 光流法中的第二帧，单通道，深度为8
 		utils::allocateOnDemand( &frame2_1C, frame_size, IPL_DEPTH_8U, 1 );
 		cvConvertImage(frame, frame2_1C, 0);
@@ -235,7 +244,7 @@ int main(void)
 		t.Stop();
 		cout<<"time=: "<<t.GetDurationInSecs ()*1000<<"(ms)"<<endl;
 		
-		current_frame++;
+	//	current_frame++;
       //  cvWaitKey(1);
 		
         //下面开始循环
