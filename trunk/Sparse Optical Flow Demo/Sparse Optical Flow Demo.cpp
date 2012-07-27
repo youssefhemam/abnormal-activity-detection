@@ -229,7 +229,8 @@ int main(void)
 	   {
            vector<ComponentFeature> components;	//local_region一个整帧的1/64里面包含12个16*16的subregion
 		   components.reserve(12);
-		   of.calOpticalFlowLK(frame1,*iter_frame1_1C,*iter_frame2_1C,flag,width_step,components);
+		   //of.calOpticalFlowLK(frame1,*iter_frame1_1C,*iter_frame2_1C,flag,width_step,components);
+		   of.calOpticalFlowVar(frame1,*iter_frame1_1C,*iter_frame2_1C,flag,width_step,components);
 		   cvReleaseImage(&(*iter_frame1_1C));
 		   cvReleaseImage(&(*iter_frame2_1C));
 		   frame_components.push_back(components);//local_region加入到帧

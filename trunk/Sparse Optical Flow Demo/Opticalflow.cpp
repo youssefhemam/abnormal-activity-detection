@@ -4,6 +4,7 @@
 #include "cv.h"
 #include "highgui.h"
 #include "utils.h"
+#include "VarFlow.h"
 using namespace std;
 using namespace cv;
 Opticalflow::Opticalflow(void)
@@ -355,5 +356,142 @@ int c=0;
  //cvWaitKey(1);
  
 
+
+}
+
+void Opticalflow::calOpticalFlowVar( IplImage* image, IplImage* prev_grey,IplImage* grey,int flag,int width_step,vector<ComponentFeature> & components )
+{
+   CvSize frame_size=cvSize(grey->width,grey->height);
+   IplImage* imgU = cvCreateImage(frame_size, IPL_DEPTH_32F, 1);
+   IplImage* imgV = cvCreateImage(frame_size, IPL_DEPTH_32F, 1);
+   int max_level = 4;
+   int start_level = 0;
+   int n1 = 2;
+   int n2 = 2;
+   float rho = 2.8;
+   float alpha = 1400;
+   float sigma = 1.5;
+
+   const int m=3,n=4;//划分成6*4个子区域
+   ComponentFeature component[m][n]={};
+   
+   VarFlow OpticalFlow(frame_size.width, frame_size.height, max_level, start_level, n1, n2, rho, alpha, sigma);
+   cvZero(imgU);
+   cvZero(imgV);
+    OpticalFlow.CalcFlow(prev_grey, grey, imgU, imgV, 0);
+	//int x,y;
+	
+	 int xSpace=1,  ySpace=1;
+	 float cutoff=1; //边界值
+	 int multiplier=1; 
+	 CvScalar color=CV_RGB(255,0,0);
+	 CvPoint p0=cvPoint(0,0);
+	 CvPoint p1 = cvPoint(0,0);
+
+	 float deltaX, deltaY, angle, hyp;
+	 for(int y = ySpace; y < imgU->height; y+= ySpace ) {
+		 for(int x = xSpace; x < imgU->width; x+= xSpace ){
+
+			 p0.x = x;
+			 p0.y = y;
+
+			 deltaX = *((float*)(imgU->imageData + y*imgU->widthStep)+x);
+			 deltaY = -(*((float*)(imgV->imageData + y*imgV->widthStep)+x));
+			 const double ZERO = 0.000001;
+			 
+
+
+			 if(deltaX<ZERO && deltaX>-ZERO)
+				 angle = pi/2;
+			 else
+				 angle = abs(atan(deltaY/deltaX));
+			 //调整角度
+			 if(deltaX<0 && deltaY>0) angle = pi - angle ;
+			 if(deltaX<0 && deltaY<0) angle = pi + angle ;
+			 if(deltaX>0 && deltaY<0) angle = 2*pi - angle ;
+			// angle = atan2(deltaY, deltaX);
+			 hyp = sqrt(deltaX*deltaX + deltaY*deltaY);
+             
+
+			 if(hyp > cutoff){
+
+				 component[y/(frame_size.height/m)][x/frame_size.width/n].angle[utils::angleRegion(angle)]++;
+				 component[y/(frame_size.height/m)][x/frame_size.width/n].speed+=hyp;
+				 
+				 
+				 p1.x = p0.x + cvRound(multiplier*hyp*cos(angle));
+				 p1.y = p0.y + cvRound(multiplier*hyp*sin(angle));
+				 int x_factor=flag%width_step;
+				 int y_factor=flag/width_step;
+				 p0.x=frame_size.width*x_factor+p0.x;
+				 p0.y=frame_size.height*y_factor+p0.y;
+				 p1.x=frame_size.width*x_factor+p1.x;
+				 p1.y=frame_size.height*y_factor+p1.y;
+
+				 //cvLine( imgMotion, p0, p1, color,1, CV_AA, 0);
+				 cvLine (image,p0,p1,color,1,CV_AA,0);
+
+				 p0.x = p1.x + cvRound(3*cos(angle-pi + pi/4));
+				 p0.y = p1.y + cvRound(3*sin(angle-pi + pi/4));
+				 cvLine( image, p0, p1, color,1, CV_AA, 0);
+
+				 p0.x = p1.x + cvRound(3*cos(angle-pi - pi/4));
+				 p0.y = p1.y + cvRound(3*sin(angle-pi - pi/4));
+				 cvLine( image, p0, p1, color,1, CV_AA, 0);
+			 }
+
+		 }
+	 }
+	 for (int i=0;i<m;i++)
+	 {
+		 for (int j=0;j<n;j++)
+		 {
+			 components.push_back(component[i][j]);
+		 }
+	 }
+	 cvReleaseImage(&imgU);
+	 cvReleaseImage(&imgV);
+}
+
+void drawMotionField(IplImage* imgU, IplImage* imgV,  IplImage * frame ,int xSpace, int ySpace, float cutoff, int multiplier, CvScalar color)
+{
+	int x, y;
+
+	CvPoint p0 = cvPoint(0,0);
+	CvPoint p1 = cvPoint(0,0);
+
+	float deltaX, deltaY, angle, hyp;
+
+	for(y = ySpace; y < imgU->height; y+= ySpace ) {
+		for(x = xSpace; x < imgU->width; x+= xSpace ){
+
+			p0.x = x;
+			p0.y = y;
+
+			deltaX = *((float*)(imgU->imageData + y*imgU->widthStep)+x);
+			deltaY = -(*((float*)(imgV->imageData + y*imgV->widthStep)+x));
+
+			angle = atan2(deltaY, deltaX);
+			hyp = sqrt(deltaX*deltaX + deltaY*deltaY);
+
+			if(hyp > cutoff){
+
+				p1.x = p0.x + cvRound(multiplier*hyp*cos(angle));
+				p1.y = p0.y + cvRound(multiplier*hyp*sin(angle));
+
+				//  cvLine( imgMotion, p0, p1, color,1, CV_AA, 0);
+				cvLine (frame,p0,p1,color,1,CV_AA,0);
+
+				p0.x = p1.x + cvRound(3*cos(angle-pi + pi/4));
+				p0.y = p1.y + cvRound(3*sin(angle-pi + pi/4));
+				cvLine( frame, p0, p1, color,1, CV_AA, 0);
+
+				p0.x = p1.x + cvRound(3*cos(angle-pi - pi/4));
+				p0.y = p1.y + cvRound(3*sin(angle-pi - pi/4));
+				cvLine( frame, p0, p1, color,1, CV_AA, 0);
+			}
+
+		}
+	}
 
 }
