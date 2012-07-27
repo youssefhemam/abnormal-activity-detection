@@ -237,7 +237,8 @@ int main(void)
 		   vector<ComponentFeature>().swap(components);//清空components
 		   flag++;
 	   }
-	 //  cvShowImage("Optic",frame1);
+	  // cvShowImage("Optic",frame1);
+	   //cvWaitKey(0);
 	    
 		video_Feature.push_back(frame_components);//将一帧加入视频流
 		vector<vector<ComponentFeature>>().swap(frame_components);
@@ -344,7 +345,7 @@ int main(void)
 				for (int j=0;j<frame_width;j++)
 				{
                   zhjg<<label_result[i][j]<<"\t";
-				  if ((label_result[i][j]<=3)&&i!=0&&i!=frame_height-2)
+				  if ((label_result[i][j]<=3)&&i!=0&&i!=frame_height-1&&j!=0&&j!=frame_width-1)
 				  {
 					  logs<<current_frame<<endl;
 					   int cvheight=frame_size.height/frame_height;
