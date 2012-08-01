@@ -387,7 +387,7 @@ int main(void)
 		
 		string fold="result\\";
 		string path=fold+framename+end;
-        cvSaveImage(path.c_str(),frame1out);
+        cvSaveImage(path.c_str(),frame2out);
 		/*int key_pressed;
 		key_pressed = cvWaitKey(1);
 		if (key_pressed=='Q'||key_pressed=='q')
