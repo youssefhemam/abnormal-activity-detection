@@ -106,7 +106,7 @@ void ImageOperations::InitOutImage()
 			classes[i][j] = label;
 			//for (r=1; r<no_regions; ++r)
 				//能力越小概率越大
-				if ((e2=(_Singleton(i, j, r))) >e)
+				if ((e2=(_Singleton(i, j, r))) <e)
 				{
 					e = e2;
 					classes[i][j] = r;

@@ -142,7 +142,7 @@ int main(void)
 	long current_frame = start_frame;
 	while(true)
 	{
-		static IplImage *frame = NULL, *frame1 = NULL, *frame1_1C = NULL, *frame2_1C = NULL,*frame1out=NULL;
+		static IplImage *frame = NULL, *frame1 = NULL, *frame1_1C = NULL, *frame2_1C = NULL,*frame1out=NULL,*frame2out=NULL;
 		vector<IplImage*> frame1_1C_subregions;//将第一帧分成32个局部区域存储在这里
 		vector<IplImage*> frame2_1C_subregions;//将第二帧分成32个局部区域存储在这里
 		int width_step=0;
@@ -202,7 +202,9 @@ int main(void)
 		} while (current_frame%25!=0);
 		
 		//frame = cvQueryFrame( input_video );
-	
+		utils::allocateOnDemand( &frame2out, frame_size, IPL_DEPTH_8U, 3 );
+		cvConvertImage(frame, frame2out, 0);
+
 		//frame2_1C 光流法中的第二帧，单通道，深度为8
 		utils::allocateOnDemand( &frame2_1C, frame_size, IPL_DEPTH_8U, 1 );
 		cvConvertImage(frame, frame2_1C, 0);
@@ -352,7 +354,7 @@ int main(void)
 					   int cvwidth=frame_size.width/frame_width;
                        CvPoint startPoint=cvPoint(j*cvwidth,i*cvheight);
 					   CvPoint endPoint =cvPoint((j+1)*cvwidth,(i+1)*cvheight);
-					   cvRectangle(frame1out,startPoint,endPoint,CV_RGB(255,0,0),1,8,0);
+					   cvRectangle(frame2out,startPoint,endPoint,CV_RGB(255,0,0),1,8,0);
 
 				  }
 				}
