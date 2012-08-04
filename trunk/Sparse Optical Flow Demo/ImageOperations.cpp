@@ -185,12 +185,14 @@ void ImageOperations::OnIterationOver(void)
 	;
 }
 
-// 1阶团，返回-log(g(x)),g(x)为高斯分布，计算点(i,j)标签为label的概率，服从高斯分布
+
 double ImageOperations::_Singleton(int i, int j, int label)
 {
-	// work_buf1保存的是查找表，用于性能优化。
+	
 	double sum=0.0f;
+
 	//double k=0.3f;
+	//index代表第l个bin
 	for (int index=0;index<cur_frame_data[i][j].activitydescriptor->GetLength();index++)
 	{
 		
