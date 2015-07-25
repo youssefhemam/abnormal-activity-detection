@@ -1,0 +1,1 @@
+a method to divide video to frames
